@@ -56,6 +56,8 @@ class Dataset:
 		return self.data != None
 
 	def query(self, dataset_id, filter_fn=lambda x: True):
+		if (!self.is_loaded()):
+			self.load()
 		resource = self.get_resource(dataset_id)
 		resource_key = self.get_resource_key(resource)
 		results = []
