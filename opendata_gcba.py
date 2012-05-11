@@ -1,5 +1,5 @@
 import ckanclient, urllib2, helpers
-import logging, pdb, csv
+import logging, csv
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -20,9 +20,6 @@ class DatasetParser:
 	def parse(self):
 		pass
 
-class ZIPParser(DatasetParser):
-	def __init__(self, dataset, resource):
-		DatasetParser.__init__(self, dataset, resource)
 
 class CSVParser(DatasetParser):
 	def __init__(self, dataset, resource):
@@ -31,7 +28,6 @@ class CSVParser(DatasetParser):
 	   self.dict_reader = csv.DictReader(self.file, delimiter=self.separator, quotechar='"')
 
 	def parse(self):
-		#pdb.set_trace()
 		table = []
 		keys = None
 		header = True
@@ -59,7 +55,7 @@ class Dataset:
 	def is_loaded(self):
 		return self.data != None
 
-	def query(self, dataset_id, filter_fn):
+	def query(self, dataset_id, filter_fn=lambda x: True):
 		resource = self.get_resource(dataset_id)
 		resource_key = self.get_resource_key(resource)
 		results = []
@@ -84,6 +80,9 @@ class Dataset:
 	def get_available_datasets(self):
 		return [self.get_resource(k[0]) for k in self.data.keys()]
 
+	def get_available_dataset_keys(self):
+		return [k for k in self.data.keys()]	
+
 	def load(self):
 		logging.debug("loading dataset metadata")
 		self.raw_metadata = self.ckan_ref.package_entity_get(self.package_name)
@@ -91,10 +90,19 @@ class Dataset:
 		for resource in self.raw_metadata['resources']:
 			logging.debug("resource data: %s" % resource)
 			logging.debug("looking for parser for %s format" % resource['format'])
-			parser_class = helpers.get_class("opendata_gcba." + resource['format'] + "Parser")
-			if parser_class is None:
+
+
+			parser_class = None
+			try:
+				parser_class = helpers.get_class("opendata_gcba." + resource['format'] + "Parser")
+				if parser_class is None:
+					logging.error("parser not found. going on with next resource")
+					continue
+			except:
 				logging.error("parser not found. going on with next resource")
 				continue
+			
+
 			download_required = False
 			try:
 				fh = open(resource['id'], 'rU')
