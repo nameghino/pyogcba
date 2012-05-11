@@ -4,7 +4,21 @@ pyogcba
 Biblioteca de consulta del repositorio de datos de Gobierno Abierto de la Ciudad de Buenos Aires en python
 
 Un proyecto con el cual busco aprender python y, en el medio, consultar la base de datos de Gobierno Abierto de GCBA.
+
 Este proyecto NO esta afiliado con el GCBA de ninguna manera.
+
+Funcionamiento de la biblioteca:
+================================
+
+En primer lugar, se basa en el modulo *ckanclient* para hacer las consultas de metadata al repositorio.
+
+Luego, con la lista de datasets disponibles, se crea un objeto Dataset, que es cargado posteriormente.
+
+Al cargarlo, el objeto descarga el contenido de todos los recursos del dataset a disco, y luego procede
+a cargarlos en un diccionario en memoria para las consultas.
+
+Una vez lista la informacion, se pueden realizar consultas al dataset mediante el metodo _query()_, que recibe
+como parametros el nombre del recurso que se desea consultar y una funcion que hace el filtrado de las filas en el recurso.
 
 Uso de la biblioteca:
 =====================
@@ -32,8 +46,8 @@ False
 
 Consultando que recursos fueron cargados desde un dataset
 ```
->>>bafici_dataset.get_available_dataset_keys()
-[(u'b2fe3d91-3863-440f-a8fe-d12c6528f0ff', u'bafici10-directores'), (u'36da191d-8041-42eb-9d57-e82f5abac76e', u'bafici11-sedes'), (u'547d2b2a-056a-4327-9e7e-3ec6bf8e61e3', u'bafici12-paises'), (u'7198ad59-d8b3-44e8-8f5a-96d2114665ab', u'bafici11-paises'), (u'd0720d81-126b-4b72-970b-66c503773bcb', u'bafici11-programacion'), (u'5a93472b-5db4-4ff9-8c8a-d13158e72d5f', u'bafici11-secciones'), (u'b075537b-a6ff-4c86-ac26-06d29fb1feca', u'bafici10-sedes'), (u'c57cfe25-6cea-4e5e-9b55-2303de2223ed', u'bafici12-sedes'), (u'ea6262ff-0f56-4720-a454-cea89eac0001', u'bafici12-directores'), (u'b6f980d6-5070-48b7-aeea-41d945b34175', u'bafici12-films'), (u'87deeb47-e819-4c97-aa24-6491bcdf82d2', u'bafici10-films'), (u'154846ce-0be2-4656-a3ed-41c92af5c18b', u'bafici11-directores'), (u'4df91503-0fd6-4f9e-bf6c-7701cec6ba86', u'bafici10-secciones'), (u'0a03d78f-d26c-49fe-a742-a9fc0f2461cb', u'bafici10-programacion'), (u'ab83a401-1a1d-4557-a9f3-94a4d012fe65', u'bafici12-secciones'), (u'5726b789-4e4e-4538-9e43-c51ec4606597', u'bafici12-programacion'), (u'7f9df205-5b43-4f9e-a315-6f236db9113a', u'bafici10-paises'), (u'2732fbf4-4e55-4794-8e98-e5d5fa6a0419', u'bafici11-films')]
+>>> [x[1] for x in bafici_dataset.get_available_dataset_keys()]
+[u'bafici10-directores', u'bafici11-sedes', u'bafici12-paises', u'bafici11-paises', u'bafici11-programacion', u'bafici11-secciones', u'bafici10-sedes', u'bafici12-sedes', u'bafici12-directores', u'bafici12-films', u'bafici10-films', u'bafici11-directores', u'bafici10-secciones', u'bafici10-programacion', u'bafici12-secciones', u'bafici12-programacion', u'bafici10-paises', u'bafici11-films']
 ```
 
 Consultando un dataset
