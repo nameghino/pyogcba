@@ -33,7 +33,7 @@ class CSVParser(DatasetParser):
 		header = True
 		for row in self.dict_reader:
 			table.append(row)
-			print row
+			#print row
 		return table
 
 class Dataset:
@@ -50,13 +50,14 @@ class Dataset:
 			return ','
 		elif ugly == 'punto y coma':
 			return ';'
+		return ','
 
 
 	def is_loaded(self):
 		return self.data != None
 
 	def query(self, dataset_id, filter_fn=lambda x: True):
-		if (!self.is_loaded()):
+		if not self.is_loaded():
 			self.load()
 		resource = self.get_resource(dataset_id)
 		resource_key = self.get_resource_key(resource)
